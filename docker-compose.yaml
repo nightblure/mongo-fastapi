@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+#  rmq:
+#    container_name: rabbitmq-bus
+#    image: 'rabbitmq:3.6-management-alpine'
+#    ports:
+#      - '5672:5672'
+
+  mongo:
+    container_name: mongo-converter-svc
+    image: mongo:5.0.25-focal
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: commondb
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+#    volumes:
+#      - ./prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+#    volumes:
+#      - grafana_data:/var/lib/grafana
